@@ -29,6 +29,8 @@ Delta convertIterableToDelta(Iterable list) {
                 finalZefyrAttributes["i"] = true;
               else if (attrKey == "blockquote")
                 finalZefyrAttributes["block"] = "quote";
+              else if (attrKey == "code-block")
+                finalZefyrAttributes["block"] = "code";
               else if (attrKey == "embed" &&
                   quillAttributesNode[attrKey]["type"] == "dots")
                 finalZefyrAttributes["embed"] = {"type": "hr"};
