@@ -54,7 +54,7 @@ Delta convertIterableToDelta(Iterable list) {
           var finalAttributes = {
             "embed": {"type": "image", "source": quillInsertNode["image"]}
           };
-          finalZefyrNode["insert"] = "";
+          finalZefyrNode["insert"] = String.fromCharCode(0x200b);
           finalZefyrNode["attributes"] = finalAttributes;
         } else {
           finalZefyrNode["insert"] = quillInsertNode;
