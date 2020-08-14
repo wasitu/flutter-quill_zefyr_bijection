@@ -40,6 +40,12 @@ Delta convertIterableToDelta(Iterable list) {
               else if (attrKey == "link")
                 finalZefyrAttributes["a"] =
                     quillAttributesNode[attrKey] ?? "n/a";
+              else if (attrKey == "list" &&
+                  quillAttributesNode[attrKey] == "bullet")
+                finalZefyrAttributes["block"] = "ul";
+              else if (attrKey == "list" &&
+                  quillAttributesNode[attrKey] == "ordered")
+                finalZefyrAttributes["block"] = "ol";
               else {
                 print("ignoring " + attrKey);
               }
