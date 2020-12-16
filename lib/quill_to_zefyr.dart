@@ -63,10 +63,13 @@ Delta convertIterableToDelta(Iterable list) {
           };
           finalZefyrNode["insert"] = String.fromCharCode(0x200b);
           finalZefyrNode["attributes"] = finalAttributes;
+          finalZefyrData.add(finalZefyrNode);
+        } else if (quillInsertNode is Map) {
+          print("ignoring " + quillInsertNode.toString());
         } else {
           finalZefyrNode["insert"] = quillInsertNode;
+          finalZefyrData.add(finalZefyrNode);
         }
-        finalZefyrData.add(finalZefyrNode);
       }
     });
     return Delta.fromJson(finalZefyrData);
