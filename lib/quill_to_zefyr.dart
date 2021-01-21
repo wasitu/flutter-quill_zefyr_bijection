@@ -5,8 +5,8 @@ Delta convertIterableToDelta(Iterable list) {
     var finalZefyrData = [];
     list.toList().forEach((quillNode) {
       var finalZefyrNode = {};
-      print(quillNode);
-      var quillInsertNode = quillNode["insert"];
+
+      // attributes
       var quillAttributesNode = quillNode["attributes"];
       if (quillAttributesNode != null) {
         var finalZefyrAttributes = {};
@@ -19,7 +19,8 @@ Delta convertIterableToDelta(Iterable list) {
               // not sure how to implement
             } else {
               if (attrKey == "bold")
-                finalZefyrAttributes["b"] = true;
+                finalZefyrAttributes["b"] =
+                    quillAttributesNode[attrKey] ?? false;
               else if (attrKey == "italic")
                 finalZefyrAttributes["i"] = true;
               else if (attrKey == "blockquote")
@@ -30,8 +31,7 @@ Delta convertIterableToDelta(Iterable list) {
                   quillAttributesNode[attrKey]["type"] == "dots")
                 finalZefyrAttributes["embed"] = {"type": "hr"};
               else if (attrKey == "header")
-                finalZefyrAttributes["heading"] =
-                    quillAttributesNode[attrKey] ?? 1;
+                finalZefyrAttributes["heading"] = quillAttributesNode[attrKey];
               else if (attrKey == "link")
                 finalZefyrAttributes["a"] =
                     quillAttributesNode[attrKey] ?? "n/a";
@@ -47,7 +47,11 @@ Delta convertIterableToDelta(Iterable list) {
               else if (attrKey == "list" &&
                   quillAttributesNode[attrKey] == "unchecked")
                 finalZefyrAttributes["checkbox"] = "unchecked";
-              else {
+              else if (attrKey == "list" &&
+                  quillAttributesNode[attrKey] == null) {
+                finalZefyrAttributes["block"] = null;
+                finalZefyrAttributes["checkbox"] = null;
+              } else {
                 print("ignoring " + attrKey);
               }
             }
@@ -56,6 +60,9 @@ Delta convertIterableToDelta(Iterable list) {
             finalZefyrNode["attributes"] = finalZefyrAttributes;
         }
       }
+
+      // insert
+      var quillInsertNode = quillNode["insert"];
       if (quillInsertNode != null) {
         if (quillInsertNode is Map && quillInsertNode.containsKey("image")) {
           var finalAttributes = {
@@ -70,6 +77,20 @@ Delta convertIterableToDelta(Iterable list) {
           finalZefyrNode["insert"] = quillInsertNode;
           finalZefyrData.add(finalZefyrNode);
         }
+      }
+
+      // reatain
+      var quillRetainNode = quillNode["retain"];
+      if (quillRetainNode != null) {
+        finalZefyrNode["retain"] = quillRetainNode;
+        finalZefyrData.add(finalZefyrNode);
+      }
+
+      // delete
+      var quillDeleteNode = quillNode["delete"];
+      if (quillDeleteNode != null) {
+        finalZefyrNode["delete"] = quillDeleteNode;
+        finalZefyrData.add(finalZefyrNode);
       }
     });
     return Delta.fromJson(finalZefyrData);
