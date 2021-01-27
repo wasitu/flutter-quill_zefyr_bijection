@@ -42,10 +42,14 @@ String convertIterableToQuillJSON(Delta list) {
         if (finalZefyrAttributes.keys.length > 0)
           finalZefyrNode["attributes"] = finalZefyrAttributes;
       }
-      if (quillInsertNode != null) {
-        {
-          finalZefyrNode["insert"] = quillInsertNode;
-        }
+      if (operation.isInsert && quillInsertNode != null) {
+        finalZefyrNode["insert"] = quillInsertNode;
+        finalZefyrData.add(finalZefyrNode);
+      } else if (operation.isRetain) {
+        finalZefyrNode['retain'] = operation.value;
+        finalZefyrData.add(finalZefyrNode);
+      } else if (operation.isDelete) {
+        finalZefyrNode['delete'] = operation.value;
         finalZefyrData.add(finalZefyrNode);
       }
     });
