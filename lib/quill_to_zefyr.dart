@@ -1,6 +1,6 @@
 import 'package:quill_delta/quill_delta.dart';
 
-Delta convertIterableToDelta(Iterable list) {
+Delta convertIterableToDelta(Iterable list, {bool initialize = true}) {
   try {
     var finalZefyrData = [];
     list.toList().forEach((quillNode) {
@@ -81,14 +81,14 @@ Delta convertIterableToDelta(Iterable list) {
 
       // reatain
       var quillRetainNode = quillNode["retain"];
-      if (quillRetainNode != null) {
+      if (!initialize && quillRetainNode != null) {
         finalZefyrNode["retain"] = quillRetainNode;
         finalZefyrData.add(finalZefyrNode);
       }
 
       // delete
       var quillDeleteNode = quillNode["delete"];
-      if (quillDeleteNode != null) {
+      if (!initialize && quillDeleteNode != null) {
         finalZefyrNode["delete"] = quillDeleteNode;
         finalZefyrData.add(finalZefyrNode);
       }

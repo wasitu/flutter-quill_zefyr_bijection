@@ -9,11 +9,12 @@ import 'package:quill_zefyr_bijection/zefyr_to_quill.dart';
 /// A converter from quill and zefyr.
 class QuillZefyrBijection {
   /// Returns zefyr delta for the given valid quill json string `{"ops":[]}`
-  static Delta convertJSONToZefyrDelta(String jsonString) {
+  static Delta convertJSONToZefyrDelta(String jsonString,
+      {bool initialize = true}) {
     try {
       var decodedJson = jsonDecode(jsonString);
       var quillOps = decodedJson["ops"] as Iterable;
-      return convertIterableToDelta(quillOps);
+      return convertIterableToDelta(quillOps, initialize: initialize);
     } catch (e) {
       throw e;
     }
