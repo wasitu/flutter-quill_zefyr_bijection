@@ -51,6 +51,12 @@ Delta convertIterableToDelta(Iterable list, {bool initialize = true}) {
                   quillAttributesNode[attrKey] == null) {
                 finalZefyrAttributes["block"] = null;
                 finalZefyrAttributes["checkbox"] = null;
+              } else if (attrKey == "id" &&
+                  quillAttributesNode[attrKey] != null) {
+                finalZefyrAttributes[attrKey] = quillAttributesNode[attrKey];
+              } else if (attrKey == "timestamp" &&
+                  quillAttributesNode[attrKey] != null) {
+                finalZefyrAttributes[attrKey] = quillAttributesNode[attrKey];
               } else {
                 print("ignoring " + attrKey);
               }

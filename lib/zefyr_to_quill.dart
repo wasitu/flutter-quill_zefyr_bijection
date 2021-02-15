@@ -7,7 +7,6 @@ String convertIterableToQuillJSON(Delta list) {
     var finalZefyrData = [];
     list.toList().forEach((operation) {
       var finalZefyrNode = {};
-      print(operation);
 
       var quillInsertNode = operation.data;
       var quillAttributesNode = operation.attributes;
@@ -35,6 +34,16 @@ String convertIterableToQuillJSON(Delta list) {
             finalZefyrNode["insert"] = quillAttributesNode[attrKey]["source"];
           } else if (attrKey == "heading")
             finalZefyrAttributes["header"] = quillAttributesNode[attrKey] ?? 1;
+          else if (attrKey == "block" && quillAttributesNode[attrKey] == "ul")
+            finalZefyrAttributes["list"] = "bullet";
+          else if (attrKey == "block" && quillAttributesNode[attrKey] == "ol")
+            finalZefyrAttributes["list"] = "ordered";
+          else if (attrKey == "checkbox" &&
+              quillAttributesNode[attrKey] == "checked")
+            finalZefyrAttributes["list"] = "checked";
+          else if (attrKey == "checkbox" &&
+              quillAttributesNode[attrKey] == "unchecked")
+            finalZefyrAttributes["list"] = "unchecked";
           else {
             print("ignoring " + attrKey);
           }
