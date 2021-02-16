@@ -6,6 +6,16 @@ Delta convertIterableToDelta(Iterable list, {bool initialize = true}) {
     list.toList().forEach((quillNode) {
       var finalZefyrNode = {};
 
+      // insert
+      var quillInsertNode = quillNode["insert"];
+      final isLine = (quillInsertNode as String)?.contains('\n') ?? false;
+
+      // reatain
+      var quillRetainNode = quillNode["retain"];
+      final isRetain = quillRetainNode != null;
+
+      final isBlock = isLine || isRetain;
+
       // attributes
       var quillAttributesNode = quillNode["attributes"];
       if (quillAttributesNode != null) {
@@ -30,33 +40,40 @@ Delta convertIterableToDelta(Iterable list, {bool initialize = true}) {
               else if (attrKey == "embed" &&
                   quillAttributesNode[attrKey]["type"] == "dots")
                 finalZefyrAttributes["embed"] = {"type": "hr"};
-              else if (attrKey == "header")
-                finalZefyrAttributes["heading"] = quillAttributesNode[attrKey];
               else if (attrKey == "link")
                 finalZefyrAttributes["a"] =
                     quillAttributesNode[attrKey] ?? "n/a";
+              else if (attrKey == "header" && isBlock)
+                finalZefyrAttributes["heading"] = quillAttributesNode[attrKey];
               else if (attrKey == "list" &&
-                  quillAttributesNode[attrKey] == "bullet")
+                  quillAttributesNode[attrKey] == "bullet" &&
+                  isBlock)
                 finalZefyrAttributes["block"] = "ul";
               else if (attrKey == "list" &&
-                  quillAttributesNode[attrKey] == "ordered")
+                  quillAttributesNode[attrKey] == "ordered" &&
+                  isBlock)
                 finalZefyrAttributes["block"] = "ol";
               else if (attrKey == "list" &&
-                  quillAttributesNode[attrKey] == "checked")
+                  quillAttributesNode[attrKey] == "checked" &&
+                  isBlock)
                 finalZefyrAttributes["checkbox"] = "checked";
               else if (attrKey == "list" &&
-                  quillAttributesNode[attrKey] == "unchecked")
+                  quillAttributesNode[attrKey] == "unchecked" &&
+                  isBlock)
                 finalZefyrAttributes["checkbox"] = "unchecked";
-              else if (attrKey == "list" &&
-                  quillAttributesNode[attrKey] == null) {
-                finalZefyrAttributes["block"] = null;
-                finalZefyrAttributes["checkbox"] = null;
-              } else if (attrKey == "id" &&
+              else if (attrKey == "id" &&
                   quillAttributesNode[attrKey] != null) {
                 finalZefyrAttributes[attrKey] = quillAttributesNode[attrKey];
               } else if (attrKey == "timestamp" &&
                   quillAttributesNode[attrKey] != null) {
                 finalZefyrAttributes[attrKey] = quillAttributesNode[attrKey];
+              } else if (!initialize && quillAttributesNode[attrKey] == null) {
+                if (attrKey == "list") {
+                  finalZefyrAttributes["block"] = null;
+                  finalZefyrAttributes["checkbox"] = null;
+                } else if (attrKey == "header") {
+                  finalZefyrAttributes["heading"] = null;
+                }
               } else {
                 print("ignoring " + attrKey);
               }
@@ -67,8 +84,6 @@ Delta convertIterableToDelta(Iterable list, {bool initialize = true}) {
         }
       }
 
-      // insert
-      var quillInsertNode = quillNode["insert"];
       if (quillInsertNode != null) {
         if (quillInsertNode is Map && quillInsertNode.containsKey("image")) {
           var finalAttributes = {
@@ -85,11 +100,19 @@ Delta convertIterableToDelta(Iterable list, {bool initialize = true}) {
         }
       }
 
-      // reatain
-      var quillRetainNode = quillNode["retain"];
-      if (!initialize && quillRetainNode != null) {
-        finalZefyrNode["retain"] = quillRetainNode;
-        finalZefyrData.add(finalZefyrNode);
+      if (quillRetainNode != null) {
+        if (initialize && finalZefyrNode["attributes"] != null) {
+          finalZefyrNode["attributes"]
+              .removeWhere((key, value) => value == null);
+          if (finalZefyrNode["attributes"].isNotEmpty) {
+            finalZefyrNode["insert"] = "\n";
+            finalZefyrData.add(finalZefyrNode);
+          }
+        }
+        if (!initialize && quillRetainNode != null) {
+          finalZefyrNode["retain"] = quillRetainNode;
+          finalZefyrData.add(finalZefyrNode);
+        }
       }
 
       // delete

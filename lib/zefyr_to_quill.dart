@@ -33,17 +33,22 @@ String convertIterableToQuillJSON(Delta list) {
               quillAttributesNode[attrKey]["type"] == "image") {
             finalZefyrNode["insert"] = quillAttributesNode[attrKey]["source"];
           } else if (attrKey == "heading")
-            finalZefyrAttributes["header"] = quillAttributesNode[attrKey] ?? 1;
+            finalZefyrAttributes["header"] = quillAttributesNode[attrKey];
           else if (attrKey == "block" && quillAttributesNode[attrKey] == "ul")
             finalZefyrAttributes["list"] = "bullet";
           else if (attrKey == "block" && quillAttributesNode[attrKey] == "ol")
             finalZefyrAttributes["list"] = "ordered";
+          else if (attrKey == "block" && quillAttributesNode[attrKey] == null)
+            finalZefyrAttributes["list"] = null;
           else if (attrKey == "checkbox" &&
               quillAttributesNode[attrKey] == "checked")
             finalZefyrAttributes["list"] = "checked";
           else if (attrKey == "checkbox" &&
               quillAttributesNode[attrKey] == "unchecked")
             finalZefyrAttributes["list"] = "unchecked";
+          else if (attrKey == "checkbox" &&
+              quillAttributesNode[attrKey] == null)
+            finalZefyrAttributes["list"] = null;
           else {
             print("ignoring " + attrKey);
           }
