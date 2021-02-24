@@ -49,6 +49,10 @@ String convertIterableToQuillJSON(Delta list) {
           else if (attrKey == "checkbox" &&
               quillAttributesNode[attrKey] == null)
             finalZefyrAttributes["list"] = null;
+          else if (attrKey == "id")
+            finalZefyrAttributes[attrKey] = quillAttributesNode[attrKey];
+          else if (attrKey == "timestamp")
+            finalZefyrAttributes[attrKey] = quillAttributesNode[attrKey];
           else {
             print("ignoring " + attrKey);
           }
