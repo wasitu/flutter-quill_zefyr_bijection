@@ -62,10 +62,12 @@ Delta convertIterableToDelta(Iterable list, {bool initialize = true}) {
                   isBlock)
                 finalZefyrAttributes["checkbox"] = "unchecked";
               else if (attrKey == "id" &&
-                  quillAttributesNode[attrKey] != null) {
+                  quillAttributesNode[attrKey] != null &&
+                  isBlock) {
                 finalZefyrAttributes[attrKey] = quillAttributesNode[attrKey];
               } else if (attrKey == "timestamp" &&
-                  quillAttributesNode[attrKey] != null) {
+                  quillAttributesNode[attrKey] != null &&
+                  isBlock) {
                 finalZefyrAttributes[attrKey] = quillAttributesNode[attrKey];
               } else if (!initialize && quillAttributesNode[attrKey] == null) {
                 if (attrKey == "list") {
