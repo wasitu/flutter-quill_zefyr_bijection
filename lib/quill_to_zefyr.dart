@@ -8,7 +8,7 @@ Delta convertIterableToDelta(Iterable list, {bool initialize = true}) {
 
       // insert
       var quillInsertNode = quillNode["insert"];
-      final isLine = (quillInsertNode as String)?.contains('\n') ?? false;
+      final isLine = (quillInsertNode is String) ? quillInsertNode.contains('\n') : false;
 
       // reatain
       var quillRetainNode = quillNode["retain"];
@@ -87,14 +87,15 @@ Delta convertIterableToDelta(Iterable list, {bool initialize = true}) {
       }
 
       if (quillInsertNode != null) {
-        if (quillInsertNode is Map && quillInsertNode.containsKey("image")) {
-          var finalAttributes = {
-            "embed": {"type": "image", "source": quillInsertNode["image"]}
-          };
-          finalZefyrNode["insert"] = String.fromCharCode(0x200b);
-          finalZefyrNode["attributes"] = finalAttributes;
-          finalZefyrData.add(finalZefyrNode);
-        } else if (quillInsertNode is Map) {
+        // if (quillInsertNode is Map && quillInsertNode.containsKey("image")) {
+        //   var finalAttributes = {
+        //     "embed": {"type": "image", "source": quillInsertNode["image"]}
+        //   };
+        //   finalZefyrNode["insert"] = String.fromCharCode(0x200b);
+        //   finalZefyrNode["attributes"] = finalAttributes;
+        //   finalZefyrData.add(finalZefyrNode);
+        // } else 
+        if (quillInsertNode is Map) {
           print("ignoring " + quillInsertNode.toString());
         } else {
           finalZefyrNode["insert"] = quillInsertNode;
