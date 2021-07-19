@@ -8,7 +8,8 @@ Delta convertIterableToDelta(Iterable list, {bool initialize = true}) {
 
       // insert
       var quillInsertNode = quillNode["insert"];
-      final isLine = (quillInsertNode is String) ? quillInsertNode.contains('\n') : false;
+      final isLine =
+          (quillInsertNode is String) ? quillInsertNode.contains('\n') : false;
 
       // reatain
       var quillRetainNode = quillNode["retain"];
@@ -22,8 +23,16 @@ Delta convertIterableToDelta(Iterable list, {bool initialize = true}) {
         var finalZefyrAttributes = {};
         if (quillAttributesNode is Map) {
           quillAttributesNode.keys.forEach((attrKey) {
-            if (["b", "i", "block", "heading", "a", "checkbox", "indent"]
-                .contains(attrKey)) {
+            if ([
+              "b",
+              "i",
+              "block",
+              "heading",
+              "a",
+              "checkbox",
+              "indent",
+              "decision",
+            ].contains(attrKey)) {
               finalZefyrAttributes[attrKey] = quillAttributesNode[attrKey];
             } else if (["background", "align"].contains(attrKey)) {
               // not sure how to implement
@@ -47,21 +56,29 @@ Delta convertIterableToDelta(Iterable list, {bool initialize = true}) {
                 finalZefyrAttributes["heading"] = quillAttributesNode[attrKey];
               else if (attrKey == "list" &&
                   quillAttributesNode[attrKey] == "bullet" &&
-                  isBlock)
+                  isBlock) {
                 finalZefyrAttributes["block"] = "ul";
-              else if (attrKey == "list" &&
+                finalZefyrAttributes["checkbox"] = null;
+                finalZefyrAttributes["decision"] = null;
+              } else if (attrKey == "list" &&
                   quillAttributesNode[attrKey] == "ordered" &&
-                  isBlock)
+                  isBlock) {
                 finalZefyrAttributes["block"] = "ol";
-              else if (attrKey == "list" &&
+                finalZefyrAttributes["checkbox"] = null;
+                finalZefyrAttributes["decision"] = null;
+              } else if (attrKey == "list" &&
                   quillAttributesNode[attrKey] == "checked" &&
-                  isBlock)
+                  isBlock) {
                 finalZefyrAttributes["checkbox"] = "checked";
-              else if (attrKey == "list" &&
+                finalZefyrAttributes["block"] = null;
+                finalZefyrAttributes["decision"] = null;
+              } else if (attrKey == "list" &&
                   quillAttributesNode[attrKey] == "unchecked" &&
-                  isBlock)
+                  isBlock) {
                 finalZefyrAttributes["checkbox"] = "unchecked";
-              else if (attrKey == "id" &&
+                finalZefyrAttributes["block"] = null;
+                finalZefyrAttributes["decision"] = null;
+              } else if (attrKey == "id" &&
                   quillAttributesNode[attrKey] != null &&
                   isBlock) {
                 finalZefyrAttributes[attrKey] = quillAttributesNode[attrKey];
@@ -69,6 +86,10 @@ Delta convertIterableToDelta(Iterable list, {bool initialize = true}) {
                   quillAttributesNode[attrKey] != null &&
                   isBlock) {
                 finalZefyrAttributes[attrKey] = quillAttributesNode[attrKey];
+              } else if (attrKey == "decision" && isBlock) {
+                finalZefyrAttributes[attrKey] = quillAttributesNode[attrKey];
+                finalZefyrAttributes["checkbox"] = null;
+                finalZefyrAttributes["block"] = null;
               } else if (!initialize && quillAttributesNode[attrKey] == null) {
                 if (attrKey == "list") {
                   finalZefyrAttributes["block"] = null;
@@ -94,7 +115,7 @@ Delta convertIterableToDelta(Iterable list, {bool initialize = true}) {
         //   finalZefyrNode["insert"] = String.fromCharCode(0x200b);
         //   finalZefyrNode["attributes"] = finalAttributes;
         //   finalZefyrData.add(finalZefyrNode);
-        // } else 
+        // } else
         if (quillInsertNode is Map) {
           print("ignoring " + quillInsertNode.toString());
         } else {
